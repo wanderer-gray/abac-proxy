@@ -1,12 +1,11 @@
 {
-  "name": "abac-proxy",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "npx knex migrate:latest",
-    "start": "npx nodemon --ignore abac-test-app.sqlite",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon --ignore abac-proxy.sqlite",
+    "postinstall": "knex migrate:latest"
   },
   "author": "meerkat",
   "dependencies": {

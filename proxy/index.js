@@ -1,103 +1,68 @@
 const fastify = require('fastify')
 const fastifyPlugin = require('fastify-plugin')
 const httpProxy = require('http-proxy')
+const getBodyRaw = require('./getBodyRaw')
+const getRequestData = require('./getRequestData')
+const getAbac = require('./getAbac')
 
-async function getData (request, req) {
-  const chunks = []
-
-  for await (const chunk of req) {
-    chunks.push(chunk)
-  }
-
-  const buffer = Buffer.concat(chunks)
-
+module.exports = fastifyPlugin(async function (app, options) {
   const {
-    ip,
-    protocol,
-    url,
-    method,
-    headers,
-    query
-  } = request
+    host,
+    port,
+    target
+  } = options
 
-  const data = {
-    ip,
-    protocol,
-    url,
-    method,
-    headers,
-    query,
-    buffer
-  }
+  const onRequest = async (request, reply) => {
+    const requestRaw = request.raw
+    const replyRaw = reply.raw
 
-  try {
-    data.body = JSON.parse(buffer.toString())
-  } catch {
-    data.body = null
-  }
+    const bodyRaw = await getBodyRaw(request)
 
-  return data
-}
+    const requestData = getRequestData(request, bodyRaw)
 
-module.exports = fastifyPlugin(async function (app) {
-  app.decorate('proxy', function (options) {
-    const {
-      target,
-      port
-    } = options
+    const abac = await getAbac(options, app)
 
-    async function onRequest (request, reply) {
-      const req = request.raw
-      const res = reply.raw
+    const result = await abac.Context(requestData)
 
-      const {
-        buffer,
-        ...data
-      } = await getData(request, req)
+    if (result !== 'permit') {
+      reply
+        .code(403)
+        .send()
 
-      const result = await app.abac.Context(data)
-
-      app.log.debug(`abac result: ${result}`)
-
-      if (result !== 'permit') {
-        res.writeHead(403, {
-          'Content-Type': 'application/json'
-        })
-        res.end(JSON.stringify({
-          message: 'Недостаточно прав'
-        }))
-
-        return
-      }
-
-      const proxy = httpProxy.createProxyServer({ target })
-
-      proxy.on('proxyReq', (proxyReq) => {
-        if (buffer) {
-          proxyReq.setHeader('Content-Length', Buffer.byteLength(buffer))
-          proxyReq.write(buffer)
-        }
-      })
-
-      proxy.on('error', (err, req, res) => {
-        res.writeHead(500, {
-          'Content-Type': 'application/json'
-        })
-        res.end(JSON.stringify({
-          name: err.name,
-          message: err.message
-        }))
-      })
-
-      proxy.web(req, res)
+      return
     }
 
-    const server = fastify()
+    const proxy = httpProxy.createProxyServer({ target })
 
-    server.addHook('onRequest', (request, reply) => {
-      onRequest(request, reply)
+    proxy.on('proxyReq', (proxyReq) => {
+      if (bodyRaw) {
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyRaw))
+        proxyReq.write(bodyRaw)
+      }
     })
 
-    server.listen(port)
+    proxy.on('error', (error, _, response) => {
+      const message = {
+        name: error.name,
+        message: error.message
+      }
+
+      response
+        .writeHead(500)
+        .end(message)
+    })
+
+    proxy.web(requestRaw, replyRaw)
+  }
+
+  const server = fastify()
+
+  server.addHook('onRequest', (request, reply) => {
+    onRequest(request, reply)
+  })
+
+  await server.listen({
+    host,
+    port
   })
 })

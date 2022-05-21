@@ -17,23 +17,16 @@ app.register(require('fastify-cookie'), config.cookie)
 
 app.register(require('fastify-sensible'))
 
-app.register(require('./abac'))
+app.register(require('./namespaces'))
 
-app.register(require('./proxy'))
+app.register(require('./proxy'), config.proxy)
 
-app.register(require('./abac-api'), { prefix: '/abac-api' })
+app.register(require('./api'), { prefix: '/api' })
 
-app.ready((err) => {
-  if (err) {
-    process.exit(1)
-  }
+app.addHook('onReady', async () => {
+  const { knex } = app
 
-  app.oas()
-
-  app.proxy({
-    target: 'http://127.0.0.1:8080',
-    port: 7080
-  })
+  await knex.raw('PRAGMA foreign_keys = ON;')
 })
 
 app.listen(config.server, (err, addr) => {

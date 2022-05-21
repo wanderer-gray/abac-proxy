@@ -1,5 +1,5 @@
 const host = '127.0.0.1'
-const port = 80
+const port = 8081
 
 module.exports = {
   development: {
@@ -16,9 +16,7 @@ module.exports = {
         servers: [{
           url: `http://${host}:${port}`,
           description: 'Local server'
-        }],
-        tags: [
-        ]
+        }]
       },
       exposeRoute: true
     },
@@ -42,6 +40,13 @@ module.exports = {
     server: {
       host,
       port
+    },
+    proxy: {
+      host: '127.0.0.1',
+      port: 82,
+      target: 'http://127.0.0.1:81',
+      algorithm: 'only-one-applicable',
+      namespaceName: 'system'
     }
   }
 }
