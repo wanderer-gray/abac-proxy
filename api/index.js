@@ -1,5 +1,7 @@
 module.exports = async function (app) {
-  app.log.info('Mount "abac-api"')
+  const { log, httpErrors } = app
+
+  log.info('Mount "abac-api"')
 
   app.decorateRequest('userId', null)
 
@@ -7,14 +9,16 @@ module.exports = async function (app) {
     const signUserId = request.cookies.userId
 
     if (typeof signUserId !== 'string') {
-      return
+      throw httpErrors.unauthorized('Необходимо войти в систему')
     }
 
     const unsignUserId = reply.unsignCookie(signUserId)
 
-    if (unsignUserId.valid && !unsignUserId.renew) {
-      request.userId = unsignUserId.value
+    if (!unsignUserId.valid || unsignUserId.renew) {
+      throw httpErrors.unauthorized('Необходимо войти в систему')
     }
+
+    request.userId = unsignUserId.value
   })
 
   app.register(require('./namespace'), { prefix: '/namespace' })

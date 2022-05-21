@@ -1,4 +1,14 @@
 const uuid = require('../uuid')
+const {
+  getSalt,
+  getHash
+} = require('../password')
+
+const user = [{
+  userId: uuid(),
+  nickname: 'admin',
+  password: '123456'
+}]
 
 const effect = [
   { name: 'permit' },
@@ -47,6 +57,18 @@ const algorithmPolicy = [
  */
 exports.up = (knex) =>
   Promise.all([
+    knex('user')
+      .insert(user.map(({ userId, nickname, password }) => {
+        const salt = getSalt()
+        const hash = getHash(password, salt)
+
+        return {
+          userId,
+          nickname,
+          salt,
+          hash
+        }
+      })),
     knex('effect')
       .insert(effect),
     knex('algorithmRule')
@@ -61,6 +83,9 @@ exports.up = (knex) =>
 */
 exports.down = (knex) =>
   Promise.all([
+    knex('user')
+      .whereIn('nickname', user.map(({ nickname }) => nickname))
+      .delete(),
     knex('effect')
       .whereIn('name', effect.map(({ name }) => name))
       .delete(),

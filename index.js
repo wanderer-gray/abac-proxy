@@ -13,13 +13,15 @@ app.register(require('fastify-oas'), config.oas)
 
 app.register(require('fastify-knexjs'), config.knex)
 
-app.register(require('fastify-cookie'), config.cookie)
+app.register(require('@fastify/cookie'), config.cookie)
 
-app.register(require('fastify-sensible'))
+app.register(require('@fastify/sensible'))
 
 app.register(require('./namespaces'))
 
 app.register(require('./proxy'), config.proxy)
+
+app.register(require('./auth'), { prefix: '/auth' })
 
 app.register(require('./api'), { prefix: '/api' })
 
