@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --ignore abac-proxy.sqlite",
+    "postinstall": "knex migrate:latest"
+  },
+  "author": "meerkat",
+  "dependencies": {
+    "@fastify/cookie": "^6.0.0",
+    "@fastify/sensible": "^4.1.0",
+    "abac-kernel": "github:wanderer-gray/abac-kernel#master",
+    "fastify": "^3.29.0",
+    "fastify-knexjs": "^1.4.0",
+    "fastify-oas": "^3.0.8",
+    "fastify-plugin": "^3.0.1",
+    "http-proxy": "^1.18.1",
+    "nodemon": "^2.0.16",
+    "pino-pretty": "^7.6.1",
+    "sqlite3": "^5.0.8"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0"
+  }
+}
