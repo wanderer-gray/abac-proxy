@@ -11,8 +11,9 @@ const getPolicy = require('./getPolicy')
 const createPolicy = require('./createPolicy')
 const updatePolicy = require('./updatePolicy')
 const deletePolicy = require('./deletePolicy')
-const getRules = require('./getRules')
-const setRules = require('./setRules')
+const getPolicyRules = require('./getPolicyRules')
+const addPolicyRule = require('./addPolicyRule')
+const deletePolicyRule = require('./deletePolicyRule')
 
 module.exports = async function (app) {
   app.log.info('Mount "policy"')
@@ -169,7 +170,7 @@ module.exports = async function (app) {
     reply.send()
   })
 
-  app.get('/getRules', {
+  app.get('/getPolicyRules', {
     schema: {
       summary: 'Получение правил политики',
       description: 'Получение правил политики по идентификатору политики',
@@ -183,41 +184,72 @@ module.exports = async function (app) {
         }
       },
       response: {
-        200: schemaPolicy.rules
+        200: schemaPolicy.policyRules
       }
     }
   }, async function (request) {
-    app.log.trace('getRules')
+    app.log.trace('getPolicyRules')
 
     const { policyId } = request.query
 
-    return getRules(policyId, app)
+    return getPolicyRules(policyId, app)
   })
 
-  app.put('/setRules', {
+  app.post('/addPolicyRule', {
     schema: {
-      summary: 'Изменение правил политики',
-      description: 'Изменение правил политики',
+      summary: 'Создание правила политики',
+      description: 'Создание правила политики',
+      tags: ['policy'],
+      body: {
+        type: 'object',
+        required: [
+          'policyRuleId',
+          'policyId',
+          'ruleId'
+        ],
+        additionalProperties: false,
+        properties: {
+          policyRuleId: schemaPolicy.policyRuleId,
+          policyId: schemaPolicy.policyId,
+          ruleId: schemaRule.ruleId
+        }
+      }
+    }
+  }, async function (request, reply) {
+    app.log.trace('addPolicyRule')
+
+    const {
+      policyRuleId,
+      policyId,
+      ruleId
+    } = request.body
+
+    await addPolicyRule(policyRuleId, policyId, ruleId, app)
+
+    reply.send()
+  })
+
+  app.delete('/deletePolicyRule', {
+    schema: {
+      summary: 'Удаление правила политики',
+      description: 'Удаление правила политики',
       tags: ['policy'],
       querystring: {
         type: 'object',
-        required: ['policyId'],
+        required: ['policyRuleId'],
         additionalProperties: false,
         properties: {
-          policyId: schemaPolicy.policyId
+          policyRuleId: schemaPolicy.policyRuleId
         }
-      },
-      body: schemaRule.rules,
-      response: {
-        200: schemaPolicy.rules
       }
     }
-  }, async function (request) {
-    app.log.trace('setRules')
+  }, async function (request, reply) {
+    app.log.trace('deletePolicyRule')
 
-    const { policyId } = request.query
-    const ruleIds = request.body
+    const { policyRuleId } = request.query
 
-    return setRules(policyId, ruleIds, app)
+    await deletePolicyRule(policyRuleId, app)
+
+    reply.send()
   })
 }

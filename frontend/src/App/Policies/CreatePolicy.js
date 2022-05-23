@@ -8,46 +8,42 @@ import {
   AddButton,
   Dialog,
   TextField,
-  SearchEffect,
   SearchTarget,
-  SearchCondition,
+  SearchAlgorithmRule,
   SearchNamespace
 } from '../component'
 import { uuid } from '../utils'
 
-export default function CreateCondition ({ onCreate }) {
+export default function CreatePolicy ({ onCreate }) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
-  const [effect, setEffect] = useState(null)
   const [target, setTarget] = useState(null)
-  const [condition, setCondition] = useState(null)
+  const [algorithmRule, setAlgorithmRule] = useState(null)
   const [namespace, setNamespace] = useState(null)
 
-  const effectId = useMemo(() => effect?.effectId ?? null, [effect])
   const targetId = useMemo(() => target?.targetId ?? null, [target])
-  const conditionId = useMemo(() => condition?.conditionId ?? null, [condition])
+  const algorithmRuleId = useMemo(() => algorithmRule?.algorithmRuleId ?? null, [algorithmRule])
   const namespaceName = useMemo(() => namespace?.name ?? null, [namespace])
 
   const errors = useMemo(() => {
     return {
       title: !title.trim() ? 'Введите название' : undefined,
-      effect: !effect ? 'Укажите эффект' : undefined,
-      condition: !effect ? 'Укажите условие' : undefined
+      target: !target ? 'Укажите цель' : undefined,
+      algorithmRule: !algorithmRule ? 'Укажите алгоритм' : undefined
     }
-  }, [title, effect, condition])
+  }, [title, target, algorithmRule])
 
   const onOpen = useCallback(() => {
     setTitle('')
-    setEffect(null)
     setTarget(null)
-    setCondition(null)
+    setAlgorithmRule(null)
     setNamespace(null)
 
     setOpen(true)
   })
   const onClose = useCallback(() => setOpen(false))
 
-  const onCreateRule = useCallback(async () => {
+  const onCreatePolicy = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -60,14 +56,14 @@ export default function CreateCondition ({ onCreate }) {
     }
 
     try {
-      await RuleAPI.createRule(uuid(), title, effectId, targetId, conditionId, namespaceName)
+      await PolicyAPI.createPolicy(uuid(), title, targetId, algorithmRuleId, namespaceName)
 
       onClose()
       onCreate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось создать правило'
+        message: 'Не удалось создать политику'
       })
     }
   })
@@ -77,10 +73,10 @@ export default function CreateCondition ({ onCreate }) {
       <AddButton onClick={onOpen} />
 
       <Dialog
-        title={'Создание правила'}
+        title={'Создание политики'}
         open={open}
         onClose={onClose}
-        onSave={onCreateRule}
+        onSave={onCreatePolicy}
       >
         <TextField
           sx={{ marginBottom: 1 }}
@@ -91,24 +87,19 @@ export default function CreateCondition ({ onCreate }) {
           onChangeValue={setTitle}
           errorText={errors.title}
         />
-        <SearchEffect
-          sx={{ marginBottom: 1 }}
-          required={true}
-          value={effect}
-          onChange={setEffect}
-          errorText={errors.effect}
-        />
         <SearchTarget
           sx={{ marginBottom: 1 }}
+          required={true}
           value={target}
           onChange={setTarget}
+          errorText={errors.target}
         />
-        <SearchCondition
+        <SearchAlgorithmRule
           sx={{ marginBottom: 1 }}
           required={true}
-          value={condition}
-          onChange={setCondition}
-          errorText={errors.condition}
+          value={algorithmRule}
+          onChange={setAlgorithmRule}
+          errorText={errors.algorithmRule}
         />
         <SearchNamespace
           value={namespace}
@@ -119,6 +110,6 @@ export default function CreateCondition ({ onCreate }) {
   )
 }
 
-CreateCondition.propTypes = {
+CreatePolicy.propTypes = {
   onCreate: PropTypes.func
 }

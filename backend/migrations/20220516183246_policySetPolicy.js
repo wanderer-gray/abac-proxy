@@ -3,7 +3,8 @@
  * @returns { Promise<void> }
  */
 exports.up = (knex) =>
-  knex.schema.createTable('policies', (table) => {
+  knex.schema.createTable('policySetPolicy', (table) => {
+    table.uuid('policySetPolicyId').primary()
     table.uuid('policySetId').notNullable()
     table.uuid('policyId').notNullable()
 
@@ -19,7 +20,7 @@ exports.up = (knex) =>
       .onUpdate('CASCADE')
       .onDelete('CASCADE')
 
-    table.primary(['policyId', 'policyId'])
+    table.unique(['policySetId', 'policyId'])
   })
 
 /**
@@ -27,4 +28,4 @@ exports.up = (knex) =>
 * @returns { Promise<void> }
 */
 exports.down = (knex) =>
-  knex.schema.dropTable('policies')
+  knex.schema.dropTable('policySetPolicy')

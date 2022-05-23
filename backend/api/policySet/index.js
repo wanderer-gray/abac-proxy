@@ -11,8 +11,9 @@ const getPolicySet = require('./getPolicySet')
 const createPolicySet = require('./createPolicySet')
 const updatePolicySet = require('./updatePolicySet')
 const deletePolicySet = require('./deletePolicySet')
-const getPolicies = require('./getPolicies')
-const setPolicies = require('./setPolicies')
+const getPolicySetPolicies = require('./getPolicySetPolicies')
+const addPolicySetPolicy = require('./addPolicySetPolicy')
+const deletePolicySetPolicy = require('./deletePolicySetPolicy')
 
 module.exports = async function (app) {
   app.log.info('Mount "policySet"')
@@ -169,7 +170,7 @@ module.exports = async function (app) {
     reply.send()
   })
 
-  app.get('/getPolicies', {
+  app.get('/getPolicySetPolicies', {
     schema: {
       summary: 'Получение политик группы',
       description: 'Получение политик группы по идентификатору группы политик',
@@ -183,41 +184,72 @@ module.exports = async function (app) {
         }
       },
       response: {
-        200: schemaPolicySet.policies
+        200: schemaPolicySet.policySetPolicies
       }
     }
   }, async function (request) {
-    app.log.trace('getPolicies')
+    app.log.trace('getPolicySetPolicies')
 
     const { policySetId } = request.query
 
-    return getPolicies(policySetId, app)
+    return getPolicySetPolicies(policySetId, app)
   })
 
-  app.put('/setPolicies', {
+  app.post('/addPolicySetPolicy', {
     schema: {
-      summary: 'Изменение политик группы',
-      description: 'Изменение политик группы',
-      tags: ['policySet'],
-      querystring: {
+      summary: 'Создание политики группы',
+      description: 'Создание политики группы',
+      tags: ['policy'],
+      body: {
         type: 'object',
-        required: ['policySetId'],
+        required: [
+          'policySetPolicyId',
+          'policySetId',
+          'policyId'
+        ],
         additionalProperties: false,
         properties: {
-          policySetId: schemaPolicySet.policySetId
+          policySetPolicyId: schemaPolicySet.policySetPolicyId,
+          policySetId: schemaPolicySet.policySetId,
+          policyId: schemaPolicy.policyId
         }
-      },
-      body: schemaPolicy.policies,
-      response: {
-        200: schemaPolicySet.policies
       }
     }
-  }, async function (request) {
-    app.log.trace('setPolicies')
+  }, async function (request, reply) {
+    app.log.trace('addPolicySetPolicy')
 
-    const { policySetId } = request.query
-    const policyIds = request.body
+    const {
+      policySetPolicyId,
+      policySetId,
+      policyId
+    } = request.body
 
-    return setPolicies(policySetId, policyIds, app)
+    await addPolicySetPolicy(policySetPolicyId, policySetId, policyId, app)
+
+    reply.send()
+  })
+
+  app.delete('/deletePolicySetPolicy', {
+    schema: {
+      summary: 'Удаление политики группы',
+      description: 'Удаление политики группы',
+      tags: ['policy'],
+      querystring: {
+        type: 'object',
+        required: ['policySetPolicyId'],
+        additionalProperties: false,
+        properties: {
+          policySetPolicyId: schemaPolicySet.policySetPolicyId
+        }
+      }
+    }
+  }, async function (request, reply) {
+    app.log.trace('deletePolicySetPolicy')
+
+    const { policySetPolicyId } = request.query
+
+    await deletePolicySetPolicy(policySetPolicyId, app)
+
+    reply.send()
   })
 }

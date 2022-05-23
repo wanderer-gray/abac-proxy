@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {
   TableContainer,
   Table,
+  TableBody,
   TableRow,
   TableCell
 } from '@mui/material'
@@ -39,16 +40,18 @@ export default function MyVTable ({
   return (
     <TableContainer>
       <Table size={size}>
-        {columns.map((column) => {
-          const { name, title } = column
+        <TableBody>
+          {columns.map((column) => {
+            const { name, title } = column
 
-          return (
-            <TableRow key={name}>
-              <TableCell variant={'head'}>{title}</TableCell>
-              <TableCell>{getRowValue(row, column)}</TableCell>
-            </TableRow>
-          )
-        })}
+            return (
+              <TableRow key={name}>
+                <TableCell variant={'head'}>{title}</TableCell>
+                <TableCell>{getRowValue(row, column)}</TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
       </Table>
     </TableContainer>
   )

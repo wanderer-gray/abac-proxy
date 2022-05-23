@@ -31,14 +31,22 @@ export const PolicySetAPI = {
       .method('delete')
       .query({ policySetId }),
 
-  getPolicies: (policySetId) =>
-    http('api/policySet/getPolicies')
+  getPolicySetPolicies: (policySetId) =>
+    http('api/policySet/getPolicySetPolicies')
       .method('get')
       .query({ policySetId }),
 
-  setPolicies: (policySetId, policies) =>
-    http('api/policySet/setPolicies')
-      .method('put')
-      .query({ policySetId })
-      .body(policies)
+  addPolicySetPolicy: (policySetPolicyId, policySetId, policyId) =>
+    http('api/policySet/addPolicySetPolicy')
+      .method('post')
+      .body({
+        policySetPolicyId,
+        policySetId,
+        policyId
+      }),
+
+  deletePolicySetPolicy: (policySetPolicyId) =>
+    http('api/policySet/deletePolicySetPolicy')
+      .method('delete')
+      .query({ policySetPolicyId })
 }

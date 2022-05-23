@@ -11,10 +11,10 @@ const getEffect = require('./getEffect')
 const getRule = require('./getRule')
 const getAlgorithmRule = require('./getAlgorithmRule')
 const getPolicy = require('./getPolicy')
-const getRules = require('./getRules')
+const getPolicyRules = require('./getPolicyRules')
 const getAlgorithmPolicy = require('./getAlgorithmPolicy')
 const getPolicySet = require('./getPolicySet')
-const getPolicies = require('./getPolicies')
+const getPolicySetPolicies = require('./getPolicySetPolicies')
 const parse = require('./parse')
 
 module.exports = {
@@ -31,9 +31,9 @@ module.exports = {
   getRule,
   getAlgorithmRule,
   getPolicy,
-  getRules,
+  getPolicyRules,
   getAlgorithmPolicy,
   getPolicySet,
-  getPolicies,
+  getPolicySetPolicies,
   parse
 }

@@ -8,63 +8,56 @@ import {
   EditButton,
   Dialog,
   TextField,
-  SearchEffect,
   SearchTarget,
-  SearchCondition,
+  SearchAlgorithmRule,
   SearchNamespace
 } from '../component'
 
-function getRuleData (rule, { title, effectId, targetId, conditionId, namespaceName }) {
-  const ruleData = {}
+function getPolicyData (rule, { title, targetId, algorithmRuleId, namespaceName }) {
+  const policyData = {}
 
   if (rule.title !== title) {
-    ruleData.title = title
-  }
-
-  if (rule.effectId !== effectId) {
-    ruleData.effectId = effectId
+    policyData.title = title
   }
 
   if (rule.targetId !== targetId) {
-    ruleData.targetId = targetId
+    policyData.targetId = targetId
   }
 
-  if (rule.conditionId !== conditionId) {
-    ruleData.conditionId = conditionId
+  if (rule.algorithmRuleId !== algorithmRuleId) {
+    policyData.algorithmRuleId = algorithmRuleId
   }
 
   if (rule.namespaceName !== namespaceName) {
-    ruleData.namespaceName = namespaceName
+    policyData.namespaceName = namespaceName
   }
 
-  return ruleData
+  return policyData
 }
 
-export default function UpdateRule ({ rule, onUpdate }) {
+export default function UpdatePolicy ({ policy, onUpdate }) {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState(rule.title)
-  const [effect, setEffect] = useState(rule.effect)
-  const [target, setTarget] = useState(rule.target)
-  const [condition, setCondition] = useState(rule.condition)
-  const [namespace, setNamespace] = useState(rule.namespace)
+  const [title, setTitle] = useState(policy.title)
+  const [target, setTarget] = useState(policy.target)
+  const [algorithmRule, setAlgorithmRule] = useState(policy.algorithmRule)
+  const [namespace, setNamespace] = useState(policy.namespace)
 
-  const effectId = useMemo(() => effect?.effectId ?? null, [effect])
   const targetId = useMemo(() => target?.targetId ?? null, [target])
-  const conditionId = useMemo(() => condition?.conditionId ?? null, [condition])
+  const algorithmRuleId = useMemo(() => algorithmRule?.algorithmRuleId ?? null, [algorithmRule])
   const namespaceName = useMemo(() => namespace?.name ?? null, [namespace])
 
   const errors = useMemo(() => {
     return {
       title: !title.trim() ? 'Введите название' : undefined,
-      effect: !effect ? 'Укажите эффект' : undefined,
-      condition: !effect ? 'Укажите условие' : undefined
+      target: !target ? 'Укажите цель' : undefined,
+      algorithmRule: !algorithmRule ? 'Укажите алгоритм' : undefined
     }
-  }, [title, effect, condition])
+  }, [title, target, algorithmRule])
 
   const onOpen = useCallback(() => setOpen(true))
   const onClose = useCallback(() => setOpen(false))
 
-  const onUpdateRule = useCallback(async () => {
+  const onUpdatePolicy = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -76,23 +69,23 @@ export default function UpdateRule ({ rule, onUpdate }) {
       return
     }
 
-    const ruleData = getRuleData(condition, { title, effectId, targetId, conditionId, namespaceName })
+    const policyData = getPolicyData(policy, { title, targetId, algorithmRuleId, namespaceName })
 
-    if (!Object.keys(ruleData).length) {
+    if (!Object.keys(policyData).length) {
       onClose()
 
       return
     }
 
     try {
-      await RuleAPI.updateRule(rule.ruleId, ruleData)
+      await PolicyAPI.updatePolicy(policy.policyId, policyData)
 
       onClose()
       onUpdate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось изменить правило'
+        message: 'Не удалось изменить политику'
       })
     }
   })
@@ -102,10 +95,10 @@ export default function UpdateRule ({ rule, onUpdate }) {
       <EditButton onClick={onOpen} />
 
       <Dialog
-        title={'Редактирование правила'}
+        title={'Редактирование политики'}
         open={open}
         onClose={onClose}
-        onSave={onUpdateRule}
+        onSave={onUpdatePolicy}
       >
         <TextField
           sx={{ marginBottom: 1 }}
@@ -116,24 +109,19 @@ export default function UpdateRule ({ rule, onUpdate }) {
           onChangeValue={setTitle}
           errorText={errors.title}
         />
-        <SearchEffect
-          sx={{ marginBottom: 1 }}
-          required={true}
-          value={effect}
-          onChange={setEffect}
-          errorText={errors.effect}
-        />
         <SearchTarget
           sx={{ marginBottom: 1 }}
+          required={true}
           value={target}
           onChange={setTarget}
+          errorText={errors.target}
         />
-        <SearchCondition
+        <SearchAlgorithmRule
           sx={{ marginBottom: 1 }}
           required={true}
-          value={condition}
-          onChange={setCondition}
-          errorText={errors.condition}
+          value={algorithmRule}
+          onChange={setAlgorithmRule}
+          errorText={errors.algorithmRule}
         />
         <SearchNamespace
           value={namespace}
@@ -144,7 +132,7 @@ export default function UpdateRule ({ rule, onUpdate }) {
   )
 }
 
-UpdateRule.propTypes = {
+UpdatePolicy.propTypes = {
   policy: PropTypes.object,
   onUpdate: PropTypes.func
 }

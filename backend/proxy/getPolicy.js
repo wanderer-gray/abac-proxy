@@ -5,7 +5,7 @@ const {
   getNamespace,
   getPolicy
 } = require('../utils')
-const getRules = require('./getRules')
+const getPolicyRules = require('./getPolicyRules')
 
 module.exports = async (policyId, app) => {
   const policyData = await getPolicy(policyId, app)
@@ -25,7 +25,7 @@ module.exports = async (policyId, app) => {
     getTarget(targetId, app),
     getAlgorithmRule(algorithmRuleId, app),
     namespaceName ? getNamespace(namespaceName, app) : undefined,
-    getRules(policyId, app)
+    getPolicyRules(policyId, app)
   ])
 
   const policy = Policy.new({

@@ -31,14 +31,22 @@ export const PolicyAPI = {
       .method('delete')
       .query({ policyId }),
 
-  getRules: (policyId) =>
-    http('api/policy/getRules')
+  getPolicyRules: (policyId) =>
+    http('api/policy/getPolicyRules')
       .method('get')
       .query({ policyId }),
 
-  setRules: (policyId, rules) =>
-    http('api/policy/setRules')
-      .method('put')
-      .query({ policyId })
-      .body(rules)
+  addPolicyRule: (policyRuleId, policyId, ruleId) =>
+    http('api/policy/addPolicyRule')
+      .method('post')
+      .body({
+        policyRuleId,
+        policyId,
+        ruleId
+      }),
+
+  deletePolicyRule: (policyRuleId) =>
+    http('api/policy/deletePolicyRule')
+      .method('delete')
+      .query({ policyRuleId })
 }

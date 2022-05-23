@@ -14,6 +14,7 @@ import Namespaces from './Namespaces'
 import Targets from './Targets'
 import Conditions from './Conditions'
 import Rules from './Rules'
+import Policies from './Policies'
 import {
   Container,
   Grid,
@@ -48,7 +49,7 @@ const pages = [
   {
     path: '/policies',
     title: 'Политики',
-    element: null
+    element: <Policies />
   },
   {
     path: '/policySets',

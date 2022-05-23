@@ -8,12 +8,11 @@ import {
   ContainerHeader,
   ContainerSearch,
   ContainerTable,
-  SearchField,
-  Effect
+  SearchField
 } from '../component'
-import CreateRule from './CreateRule'
-import UpdatePolicy from './UpdateRule'
-import DeletePolicy from './DeleteRule'
+import CreatePolicy from './CreatePolicy'
+import UpdatePolicy from './UpdatePolicy'
+import DeletePolicy from './DeletePolicy'
 import { wait } from '../utils'
 
 const columns = [
@@ -30,20 +29,14 @@ const columns = [
     title: 'Настройки',
     columns: [
       {
-        name: 'effect',
-        title: 'Эффект',
-        convert: (effect) =>
-          <Effect effect={effect} />
-      },
-      {
         name: 'target',
         path: ['target', 'title'],
         title: 'Цель'
       },
       {
-        name: 'condition',
-        path: ['condition', 'title'],
-        title: 'Условие'
+        name: 'algorithmRule',
+        path: ['algorithmRule', 'name'],
+        title: 'Алгоритм'
       },
       {
         name: 'namespace',
@@ -58,58 +51,51 @@ const columns = [
   }
 ]
 
-const getEffect = (id) =>
-  EffectAPI.getEffect(id)
-
 const getTarget = (id) =>
   TargetAPI.getTarget(id)
 
-const getCondition = (id) =>
-  ConditionAPI.getCondition(id)
+const getAlgorithmRule = (id) =>
+  AlgorithmRuleAPI.getAlgorithmRule(id)
 
 const getNamespace = (name) =>
   NamespaceAPI.getNamespace(name)
 
-const getRule = async (id) => {
+const getPolicy = async (id) => {
   const {
-    ruleId,
+    policyId,
     title,
-    effectId,
     targetId,
-    conditionId,
+    algorithmRuleId,
     namespaceName
-  } = await RuleAPI.getRule(id)
+  } = await PolicyAPI.getPolicy(id)
 
   const [
-    effect,
     target,
-    condition,
+    algorithmRule,
     namespace
   ] = await Promise.all([
-    getEffect(effectId),
     getTarget(targetId),
-    getCondition(conditionId),
+    getAlgorithmRule(algorithmRuleId),
     getNamespace(namespaceName)
   ])
 
   return {
-    ruleId,
+    policyId,
     title,
-    effect,
     target,
-    condition,
+    algorithmRule,
     namespace
   }
 }
 
-const getRules = (ids) =>
-  wait(ids.map(getRule))
+const getPolicies = (ids) =>
+  wait(ids.map(getPolicy))
 
 const searchPolicy = async (title) => {
   try {
-    const ids = await RuleAPI.searchRule(title)
+    const ids = await PolicyAPI.searchPolicy(title)
 
-    return getRules(ids)
+    return getPolicies(ids)
   } catch {
     nofity({
       variant: 'error',
@@ -136,7 +122,7 @@ export default function Policies () {
     <Container>
       <ContainerHeader
         title={'Политики'}
-        create={<CreateRule onCreate={refresh} />}
+        create={<CreatePolicy onCreate={refresh} />}
       />
 
       <ContainerSearch>

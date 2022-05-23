@@ -57,7 +57,7 @@ export default function UpdateRule ({ rule, onUpdate }) {
     return {
       title: !title.trim() ? 'Введите название' : undefined,
       effect: !effect ? 'Укажите эффект' : undefined,
-      condition: !effect ? 'Укажите условие' : undefined
+      condition: !condition ? 'Укажите условие' : undefined
     }
   }, [title, effect, condition])
 

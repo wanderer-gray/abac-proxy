@@ -47,22 +47,32 @@ const policySets = {
   items: policySetId
 }
 
-const policies = {
+const policySetPolicyId = {
+  description: 'Идентификатор связи группы политик и политики',
+  type: 'string',
+  format: 'uuid'
+}
+
+const policySetPolicy = {
+  description: 'Связь группы политик и политики',
+  type: 'object',
+  required: [
+    'policySetPolicyId',
+    'policySetId',
+    'policyId'
+  ],
+  additionalProperties: false,
+  properties: {
+    policySetPolicyId,
+    policySetId,
+    policyId
+  }
+}
+
+const policySetPolicies = {
   description: 'Связи групп политик и политик',
   type: 'array',
-  items: {
-    description: 'Связь группы политик и политики',
-    type: 'object',
-    required: [
-      'policySetId',
-      'policyId'
-    ],
-    additionalProperties: false,
-    properties: {
-      policySetId,
-      policyId
-    }
-  }
+  items: policySetPolicy
 }
 
 module.exports = {
@@ -71,5 +81,7 @@ module.exports = {
   titleSearch,
   policySet,
   policySets,
-  policies
+  policySetPolicyId,
+  policySetPolicy,
+  policySetPolicies
 }
