@@ -1,8 +1,10 @@
 import React, {
   Fragment,
-  useState
+  useState,
+  useCallback
 } from 'react'
 import PropTypes from 'prop-types'
+import VTable from './VTable'
 import CollapseButton from './CollapseButton'
 import {
   TableContainer,
@@ -25,75 +27,111 @@ function getRowValueByPath (row, path) {
   return getRowValueByPath(row[key], next)
 }
 
-function getRowValue (row, { name, path }) {
-  if (path) {
-    return getRowValueByPath(row, path)
+function getRowValueConverted (value, convert) {
+  if (!convert) {
+    return value
   }
 
-  return row[name]
+  return convert(value)
+}
+
+function getRowValue (row, { vertical, columns, path, name, convert }) {
+  if (vertical) {
+    return (
+      <VTable
+        size={'small'}
+        columns={columns}
+        row={row}
+      />
+    )
+  }
+
+  const value = getRowValueByPath(row, path ?? [name])
+
+  return getRowValueConverted(value, convert)
 }
 
 function MyTableRow ({
   columns,
-  row: { collapse, ...row }
+  row
 }) {
-  const [open, setOpen] = useState(false)
+  const [opens, setOpens] = useState({})
+
+  const onOpen = useCallback((name) => {
+    return () => {
+      setOpens({
+        ...opens,
+        [name]: !opens[name]
+      })
+    }
+  })
 
   return (
     <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'none' } }}>
-        {columns.map(({ name, path, align }) => (
-          <TableCell
-            key={name}
-            variant={'body'}
-            align={align}
-            width={name === 'collapse' ? '24px' : undefined}
-          >
-            {name === 'collapse'
-              ? (
-                  <CollapseButton
-                    open={open}
-                    setOpen={setOpen}
-                  />
-                )
-              : getRowValue(row, { name, path })}
-          </TableCell>
-        ))}
+      <TableRow>
+        {columns.map((column) => {
+          const { collapse, name, align } = column
+
+          return (
+            <TableCell
+              key={name}
+              sx={{ verticalAlign: 'baseline' }}
+              variant={'body'}
+              align={align}
+            >
+              {collapse
+                ? (
+                    <CollapseButton
+                      open={opens[name]}
+                      setOpen={onOpen(name)}
+                    />
+                  )
+                : getRowValue(row, column)}
+            </TableCell>
+          )
+        })}
       </TableRow>
 
-      {collapse
-        ? (
-            <TableRow sx={{ '& > *': { borderBottom: 'none' } }}>
-              <TableCell
-                colSpan={columns.length}
-                variant={'body'}
-                sx={{
-                  paddingBottom: 0,
-                  paddingTop: 0
-                }}
+      {columns.map(({ collapse, name, convert }) => {
+        if (!collapse) {
+          return null
+        }
+
+        return (
+          <TableRow
+            key={name}
+            sx={{ '& > *': { border: 'none' } }}
+          >
+            <TableCell
+              colSpan={columns.length}
+              variant={'body'}
+              sx={{
+                paddingBottom: 0,
+                paddingTop: 0
+              }}
+            >
+              <Collapse
+                in={opens[name]}
+                timeout={'auto'}
+                unmountOnExit={true}
               >
-                <Collapse
-                  in={open}
-                  timeout={'auto'}
-                  unmountOnExit={true}
+                <Paper
+                  elevation={0}
+                  square={true}
+                  variant={'outlined'}
+                  sx={{
+                    marginTop: 1,
+                    marginBottom: 1,
+                    padding: 1
+                  }}
                 >
-                  <Paper
-                    elevation={0}
-                    square={true}
-                    variant={'outlined'}
-                    sx={{
-                      marginTop: 1,
-                      marginBottom: 1,
-                      padding: 1
-                    }}
-                  >
-                    {collapse}
-                  </Paper>
-                </Collapse>
-              </TableCell>
-            </TableRow>
-          )
-        : null}
+                  {convert(row)}
+                </Paper>
+              </Collapse>
+            </TableCell>
+          </TableRow>
+        )
+      })}
     </Fragment>
   )
 }
@@ -113,13 +151,14 @@ export default function MyTable ({
       <Table size={size}>
         <TableHead>
           <TableRow>
-            {columns.map(({ name, title, align }) => (
+            {columns.map(({ name, sx, align, title }) => (
               <TableCell
                 key={name}
                 variant={'head'}
+                sx={sx}
                 align={align}
               >
-                {title ?? null}
+                {title}
               </TableCell>
             ))}
           </TableRow>

@@ -10,7 +10,10 @@ import {
   useNavigate
 } from 'react-router-dom'
 import { useAuth } from '../Auth'
+import Namespaces from './Namespaces'
 import Targets from './Targets'
+import Conditions from './Conditions'
+import Rules from './Rules'
 import {
   Container,
   Grid,
@@ -25,7 +28,7 @@ const pages = [
   {
     path: '/namespace',
     title: 'Пространства имен',
-    element: null
+    element: <Namespaces />
   },
   {
     path: '/target',
@@ -35,12 +38,12 @@ const pages = [
   {
     path: '/condition',
     title: 'Условия',
-    element: null
+    element: <Conditions />
   },
   {
     path: '/rules',
     title: 'Правила',
-    element: null
+    element: <Rules />
   },
   {
     path: '/policies',

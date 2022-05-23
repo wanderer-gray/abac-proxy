@@ -11,24 +11,24 @@ import {
   CodeField
 } from '../component'
 
-function getTargetData (target, { title, source }) {
-  const targetData = {}
+function getConditionData (target, { title, source }) {
+  const conditionData = {}
 
   if (target.title !== title) {
-    targetData.title = title
+    conditionData.title = title
   }
 
   if (target.source !== source) {
-    targetData.source = source
+    conditionData.source = source
   }
 
-  return targetData
+  return conditionData
 }
 
-export default function UpdateTarget ({ target, onUpdate }) {
+export default function UpdateCondition ({ condition, onUpdate }) {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState(target.title)
-  const [source, setSource] = useState(target.source)
+  const [title, setTitle] = useState(condition.title)
+  const [source, setSource] = useState(condition.source)
 
   const errors = useMemo(() => {
     return {
@@ -40,7 +40,7 @@ export default function UpdateTarget ({ target, onUpdate }) {
   const onOpen = useCallback(() => setOpen(true))
   const onClose = useCallback(() => setOpen(false))
 
-  const onUpdateTarget = useCallback(async () => {
+  const onUpdateCondition = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -52,23 +52,23 @@ export default function UpdateTarget ({ target, onUpdate }) {
       return
     }
 
-    const targetData = getTargetData(target, { title, source })
+    const conditionData = getConditionData(condition, { title, source })
 
-    if (!Object.keys(targetData).length) {
+    if (!Object.keys(conditionData).length) {
       onClose()
 
       return
     }
 
     try {
-      await TargetAPI.updateTarget(target.targetId, targetData)
+      await ConditionAPI.updateCondition(condition.conditionId, conditionData)
 
       onClose()
       onUpdate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось изменить цель'
+        message: 'Не удалось изменить условие'
       })
     }
   })
@@ -78,10 +78,10 @@ export default function UpdateTarget ({ target, onUpdate }) {
       <EditButton onClick={onOpen} />
 
       <Dialog
-        title={'Редактирование цели'}
+        title={'Редактирование условия'}
         open={open}
         onClose={onClose}
-        onSave={onUpdateTarget}
+        onSave={onUpdateCondition}
       >
         <TextField
           sx={{ marginBottom: 1 }}
@@ -107,7 +107,7 @@ export default function UpdateTarget ({ target, onUpdate }) {
   )
 }
 
-UpdateTarget.propTypes = {
-  target: PropTypes.object,
+UpdateCondition.propTypes = {
+  condition: PropTypes.object,
   onUpdate: PropTypes.func
 }

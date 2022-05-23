@@ -10,9 +10,9 @@ import {
   ContainerTable,
   SearchField
 } from '../component'
-import CreateTarget from './CreateTarget'
-import UpdateTarget from './UpdateTarget'
-import DeleteTarget from './DeleteTarget'
+import CreateCondition from './CreateCondition'
+import UpdateCondition from './UpdateCondition'
+import DeleteCondition from './DeleteCondition'
 import { wait } from '../utils'
 
 const columns = [
@@ -33,35 +33,35 @@ const columns = [
   }
 ]
 
-const getTarget = (id) =>
-  TargetAPI.getTarget(id)
+const getCondition = (id) =>
+  ConditionAPI.getCondition(id)
 
-const getTargets = (ids) =>
-  wait(ids.map(getTarget))
+const getConditions = (ids) =>
+  wait(ids.map(getCondition))
 
-const searchTarget = async (title) => {
+const searchCondition = async (title) => {
   try {
-    const ids = await TargetAPI.searchTarget(title)
+    const ids = await ConditionAPI.searchCondition(title)
 
-    return getTargets(ids)
+    return getConditions(ids)
   } catch {
     nofity({
       variant: 'error',
-      message: 'Не удалось получить список целей'
+      message: 'Не удалось получить список условий'
     })
   }
 
   return []
 }
 
-export default function Targets () {
+export default function Conditions () {
   const [title, setTitle] = useState('')
-  const [targets, setTargets] = useState([])
+  const [conditions, setConditions] = useState([])
 
   const refresh = useCallback(async () => {
-    const targets = await searchTarget(title)
+    const conditions = await searchCondition(title)
 
-    setTargets(targets)
+    setConditions(conditions)
   })
 
   useEffect(() => { refresh() }, [title])
@@ -69,8 +69,8 @@ export default function Targets () {
   return (
     <Container>
       <ContainerHeader
-        title={'Цели'}
-        create={<CreateTarget onCreate={refresh} />}
+        title={'Условия'}
+        create={<CreateCondition onCreate={refresh} />}
       />
 
       <ContainerSearch>
@@ -85,19 +85,19 @@ export default function Targets () {
       <ContainerTable
         columns={columns}
         rows={
-          targets.map((target) => {
+          conditions.map((condition) => {
             return {
-              key: target.targetId,
-              title: target.title,
-              source: target.source,
+              key: condition.conditionId,
+              title: condition.title,
+              source: condition.source,
               action: (
                 <>
-                  <UpdateTarget
-                    target={target}
+                  <UpdateCondition
+                    condition={condition}
                     onUpdate={refresh}
                   />
-                  <DeleteTarget
-                    target={target}
+                  <DeleteCondition
+                    condition={condition}
                     onDelete={refresh}
                   />
                 </>

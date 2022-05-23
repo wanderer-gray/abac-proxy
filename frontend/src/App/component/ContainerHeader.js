@@ -27,3 +27,7 @@ ContainerHeader.propTypes = {
   title: PropTypes.string,
   create: PropTypes.node
 }
+
+ContainerHeader.defaultProps = {
+  create: null
+}

@@ -5,30 +5,17 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import {
-  EditButton,
+  AddButton,
   Dialog,
   TextField,
   CodeField
 } from '../component'
+import { uuid } from '../utils'
 
-function getTargetData (target, { title, source }) {
-  const targetData = {}
-
-  if (target.title !== title) {
-    targetData.title = title
-  }
-
-  if (target.source !== source) {
-    targetData.source = source
-  }
-
-  return targetData
-}
-
-export default function UpdateTarget ({ target, onUpdate }) {
+export default function CreateCondition ({ onCreate }) {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState(target.title)
-  const [source, setSource] = useState(target.source)
+  const [title, setTitle] = useState('')
+  const [source, setSource] = useState('')
 
   const errors = useMemo(() => {
     return {
@@ -37,10 +24,15 @@ export default function UpdateTarget ({ target, onUpdate }) {
     }
   }, [title, source])
 
-  const onOpen = useCallback(() => setOpen(true))
+  const onOpen = useCallback(() => {
+    setTitle('')
+    setSource('')
+
+    setOpen(true)
+  })
   const onClose = useCallback(() => setOpen(false))
 
-  const onUpdateTarget = useCallback(async () => {
+  const onCreateCondition = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -52,43 +44,34 @@ export default function UpdateTarget ({ target, onUpdate }) {
       return
     }
 
-    const targetData = getTargetData(target, { title, source })
-
-    if (!Object.keys(targetData).length) {
-      onClose()
-
-      return
-    }
-
     try {
-      await TargetAPI.updateTarget(target.targetId, targetData)
+      await ConditionAPI.createCondition(uuid(), title, source)
 
       onClose()
-      onUpdate()
+      onCreate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось изменить цель'
+        message: 'Не удалось создать условие'
       })
     }
   })
 
   return (
     <>
-      <EditButton onClick={onOpen} />
+      <AddButton onClick={onOpen} />
 
       <Dialog
-        title={'Редактирование цели'}
+        title={'Создание условия'}
         open={open}
         onClose={onClose}
-        onSave={onUpdateTarget}
+        onSave={onCreateCondition}
       >
         <TextField
           sx={{ marginBottom: 1 }}
           required={true}
           label={'Название'}
           placeholder={'Введите название...'}
-          fullWidth={true}
           value={title}
           onChangeValue={setTitle}
           errorText={errors.title}
@@ -107,7 +90,6 @@ export default function UpdateTarget ({ target, onUpdate }) {
   )
 }
 
-UpdateTarget.propTypes = {
-  target: PropTypes.object,
-  onUpdate: PropTypes.func
+CreateCondition.propTypes = {
+  onCreate: PropTypes.func
 }

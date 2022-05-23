@@ -87,10 +87,10 @@ module.exports = async function (app) {
     const {
       conditionId,
       title,
-      code
+      source
     } = request.body
 
-    return createCondition(conditionId, title, code, app)
+    return createCondition(conditionId, title, source, app)
   })
 
   app.put('/updateCondition', {

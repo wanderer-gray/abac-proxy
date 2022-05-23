@@ -23,6 +23,7 @@ const path = {
 const schema = {
   description: 'Схема атрибута',
   type: 'object',
+  additionalProperties: true,
   example: {
     type: 'string'
   }

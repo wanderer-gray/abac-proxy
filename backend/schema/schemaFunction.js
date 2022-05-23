@@ -13,6 +13,7 @@ const nameSearch = {
 const argSchema = {
   description: 'Схема аргумента',
   type: 'object',
+  additionalProperties: true,
   example: {
     type: 'string'
   }
@@ -37,6 +38,7 @@ const argsSettings = {
 const resultSchema = {
   description: 'Схема результата',
   type: 'object',
+  additionalProperties: true,
   example: {
     type: 'string'
   }

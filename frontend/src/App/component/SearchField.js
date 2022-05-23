@@ -1,21 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TextField } from '@mui/material'
+import TextField from './TextField'
 import SearchIcon from '@mui/icons-material/Search'
 
 export default function SearchField ({
   label,
   placeholder,
   value,
-  onChange
+  onChangeValue
 }) {
   return (
     <TextField
       label={label}
       placeholder={placeholder}
-      fullWidth={true}
       value={value}
-      onChange={onChange}
+      onChangeValue={onChangeValue}
       InputProps={{
         startAdornment: (
           <SearchIcon
@@ -32,5 +31,5 @@ SearchField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChangeValue: PropTypes.func
 }

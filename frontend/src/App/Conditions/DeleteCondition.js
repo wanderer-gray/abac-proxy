@@ -2,10 +2,10 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { DeleteButton } from '../component'
 
-export default function DeleteTarget ({ target, onDelete }) {
-  const onDeleteTarget = useCallback(async () => {
+export default function DeleteCondition ({ condition, onDelete }) {
+  const onDeleteCondition = useCallback(async () => {
     try {
-      await TargetAPI.deleteTarget(target.targetId)
+      await ConditionAPI.deleteCondition(condition.conditionId)
 
       onDelete()
     } catch {
@@ -16,10 +16,10 @@ export default function DeleteTarget ({ target, onDelete }) {
     }
   })
 
-  return <DeleteButton onClick={onDeleteTarget} />
+  return <DeleteButton onClick={onDeleteCondition} />
 }
 
-DeleteTarget.propTypes = {
-  target: PropTypes.object,
+DeleteCondition.propTypes = {
+  condition: PropTypes.object,
   onDelete: PropTypes.func
 }

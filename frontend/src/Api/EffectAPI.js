@@ -5,7 +5,7 @@ export const EffectAPI = {
       .query({ name }),
 
   getEffect: (effectId) =>
-    http('api/effect/getAttribute')
+    http('api/effect/getEffect')
       .method('get')
       .query({ effectId })
 }
