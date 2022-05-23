@@ -15,6 +15,7 @@ const getRules = require('./getRules')
 const getAlgorithmPolicy = require('./getAlgorithmPolicy')
 const getPolicySet = require('./getPolicySet')
 const getPolicies = require('./getPolicies')
+const parse = require('./parse')
 
 module.exports = {
   getNamespaces,
@@ -33,5 +34,6 @@ module.exports = {
   getRules,
   getAlgorithmPolicy,
   getPolicySet,
-  getPolicies
+  getPolicies,
+  parse
 }
