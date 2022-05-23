@@ -13,8 +13,12 @@ const title = {
   description: 'Название правила',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'Правило 1'
+}
+
+const titleSearch = {
+  ...title,
+  default: ''
 }
 
 const rule = {
@@ -48,6 +52,7 @@ const rules = {
 module.exports = {
   ruleId,
   title,
+  titleSearch,
   rule,
   rules
 }

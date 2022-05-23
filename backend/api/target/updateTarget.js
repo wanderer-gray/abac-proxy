@@ -1,3 +1,4 @@
+const { Parser } = require('abac-kernel')
 const getTarget = require('./getTarget')
 
 module.exports = async function (targetId, targetData, app) {
@@ -5,9 +6,13 @@ module.exports = async function (targetId, targetData, app) {
 
   log.debug(`updateTarget: targetId=${targetId}; targetData=${JSON.stringify(targetData)}`)
 
-  const { code } = targetData
+  const { source } = targetData
 
-  if (code !== undefined) {
+  if (source !== undefined) {
+    const code = Parser.Parse(source)
+
+    log.info(`updateTarget: code=${JSON.stringify(code)}`)
+
     targetData.code = JSON.stringify(code)
   }
 

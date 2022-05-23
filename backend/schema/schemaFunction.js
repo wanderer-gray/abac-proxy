@@ -2,8 +2,12 @@ const name = {
   description: 'Название функции',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'мега_функция'
+}
+
+const nameSearch = {
+  ...name,
+  default: ''
 }
 
 const argSchema = {
@@ -72,6 +76,7 @@ const functions = {
 
 module.exports = {
   name,
+  nameSearch,
   argsSettings,
   resultSettings,
   function: _function,

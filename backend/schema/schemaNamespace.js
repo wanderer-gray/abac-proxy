@@ -2,8 +2,12 @@ const name = {
   description: 'Название пространства имен',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'system'
+}
+
+const nameSearch = {
+  ...name,
+  default: ''
 }
 
 const nameNullable = {
@@ -29,6 +33,7 @@ const namespaces = {
 
 module.exports = {
   name,
+  nameSearch,
   nameNullable,
   namespace,
   namespaces

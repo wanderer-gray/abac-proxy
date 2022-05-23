@@ -13,8 +13,12 @@ const title = {
   description: 'Название политики',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'Политика 1'
+}
+
+const titleSearch = {
+  ...title,
+  default: ''
 }
 
 const policy = {
@@ -64,6 +68,7 @@ const rules = {
 module.exports = {
   policyId,
   title,
+  titleSearch,
   policy,
   policies,
   rules

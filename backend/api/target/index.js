@@ -18,7 +18,7 @@ module.exports = async function (app) {
         type: 'object',
         additionalProperties: false,
         properties: {
-          title: schemaTarget.title
+          title: schemaTarget.titleSearch
         }
       },
       response: {
@@ -68,13 +68,13 @@ module.exports = async function (app) {
         required: [
           'targetId',
           'title',
-          'code'
+          'source'
         ],
         additionalProperties: false,
         properties: {
           targetId: schemaTarget.targetId,
           title: schemaTarget.title,
-          code: schemaTarget.code
+          source: schemaTarget.source
         }
       },
       response: {
@@ -87,10 +87,10 @@ module.exports = async function (app) {
     const {
       targetId,
       title,
-      code
+      source
     } = request.body
 
-    return createTarget(targetId, title, code, app)
+    return createTarget(targetId, title, source, app)
   })
 
   app.put('/updateTarget', {
@@ -112,7 +112,7 @@ module.exports = async function (app) {
         additionalProperties: false,
         properties: {
           title: schemaTarget.title,
-          code: schemaTarget.code
+          source: schemaTarget.source
         }
       },
       response: {

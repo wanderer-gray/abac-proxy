@@ -2,8 +2,12 @@ const name = {
   description: 'Название атрибута',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'мега_атрибут'
+}
+
+const nameSearch = {
+  ...name,
+  default: ''
 }
 
 const path = {
@@ -56,6 +60,7 @@ const attributes = {
 
 module.exports = {
   name,
+  nameSearch,
   path,
   schema,
   computer,

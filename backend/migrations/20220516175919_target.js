@@ -6,6 +6,7 @@ exports.up = (knex) =>
   knex.schema.createTable('target', (table) => {
     table.uuid('targetId').primary()
     table.string('title').notNullable().unique()
+    table.text('source').notNullable()
     table.text('code').notNullable()
   })
 

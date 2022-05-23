@@ -13,8 +13,18 @@ const title = {
   description: 'Название цели',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'Цель 1'
+}
+
+const titleSearch = {
+  ...title,
+  default: ''
+}
+
+const source = {
+  description: 'Исходный код цели',
+  type: 'string',
+  example: 'abc == 123'
 }
 
 const code = {
@@ -33,12 +43,14 @@ const target = {
   required: [
     'targetId',
     'title',
+    'source',
     'code'
   ],
   additionalProperties: false,
   properties: {
     targetId,
     title,
+    source,
     code
   }
 }
@@ -53,7 +65,8 @@ module.exports = {
   targetId,
   targetIdNullable,
   title,
-  code,
+  titleSearch,
+  source,
   target,
   targets
 }

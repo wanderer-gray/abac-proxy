@@ -1,3 +1,4 @@
+const { Parser } = require('abac-kernel')
 const getCondition = require('./getCondition')
 
 module.exports = async function (conditionId, conditionData, app) {
@@ -5,9 +6,13 @@ module.exports = async function (conditionId, conditionData, app) {
 
   log.debug(`updateCondition: conditionId=${conditionId}; conditionData=${JSON.stringify(conditionData)}`)
 
-  const { code } = conditionData
+  const { source } = conditionData
 
-  if (code !== undefined) {
+  if (source !== undefined) {
+    const code = Parser.Parse(source)
+
+    log.info(`updateCondition: code=${JSON.stringify(code)}`)
+
     conditionData.code = JSON.stringify(code)
   }
 

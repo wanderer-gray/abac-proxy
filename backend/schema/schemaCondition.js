@@ -8,8 +8,18 @@ const title = {
   description: 'Название условия',
   type: 'string',
   maxLength: 255,
-  default: '',
   example: 'Условие 1'
+}
+
+const titleSearch = {
+  ...title,
+  default: ''
+}
+
+const source = {
+  description: 'Исходный код условия',
+  type: 'string',
+  example: 'abc == 123'
 }
 
 const code = {
@@ -28,12 +38,14 @@ const condition = {
   required: [
     'conditionId',
     'title',
+    'source',
     'code'
   ],
   additionalProperties: false,
   properties: {
     conditionId,
     title,
+    source,
     code
   }
 }
@@ -47,7 +59,8 @@ const conditions = {
 module.exports = {
   conditionId,
   title,
-  code,
+  titleSearch,
+  source,
   condition,
   conditions
 }

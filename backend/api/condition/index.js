@@ -18,7 +18,7 @@ module.exports = async function (app) {
         type: 'object',
         additionalProperties: false,
         properties: {
-          title: schemaCondition.title
+          title: schemaCondition.titleSearch
         }
       },
       response: {
@@ -68,13 +68,13 @@ module.exports = async function (app) {
         required: [
           'conditionId',
           'title',
-          'code'
+          'source'
         ],
         additionalProperties: false,
         properties: {
           conditionId: schemaCondition.conditionId,
           title: schemaCondition.title,
-          code: schemaCondition.code
+          source: schemaCondition.source
         }
       },
       response: {
@@ -112,7 +112,7 @@ module.exports = async function (app) {
         additionalProperties: false,
         properties: {
           title: schemaCondition.title,
-          code: schemaCondition.code
+          source: schemaCondition.source
         }
       },
       response: {

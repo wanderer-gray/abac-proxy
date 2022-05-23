@@ -20,7 +20,7 @@ module.exports = async function (app) {
         additionalProperties: false,
         properties: {
           namespaceName: schemaNamespace.name,
-          attributeName: schemaAttribute.name
+          attributeName: schemaAttribute.nameSearch
         }
       },
       response: {

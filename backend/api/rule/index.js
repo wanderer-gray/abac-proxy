@@ -24,7 +24,7 @@ module.exports = async function (app) {
         type: 'object',
         additionalProperties: false,
         properties: {
-          title: schemaRule.title
+          title: schemaRule.titleSearch
         }
       },
       response: {

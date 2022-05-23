@@ -7,6 +7,7 @@ module.exports = async (targetId, app) => {
     .where({ targetId })
     .first([
       'title',
+      'source',
       'code'
     ])
 
@@ -18,12 +19,14 @@ module.exports = async (targetId, app) => {
 
   const {
     title,
+    source,
     code
   } = target
 
   return {
     targetId,
     title,
+    source,
     code: JSON.parse(code)
   }
 }
