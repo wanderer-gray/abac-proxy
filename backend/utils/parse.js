@@ -1,6 +1,6 @@
 const { Parser } = require('abac-kernel')
 
-module.exports = async (source, app) => {
+module.exports = (source, app) => {
   const { log, httpErrors } = app
 
   log.debug(`parse: source=${source}`)
