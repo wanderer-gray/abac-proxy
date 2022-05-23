@@ -27,31 +27,19 @@ const source = {
   example: 'abc == 123'
 }
 
-const code = {
-  description: 'Код цели',
-  type: 'object',
-  example: {
-    class: 'value',
-    type: 'boolean',
-    value: true
-  }
-}
-
 const target = {
   description: 'Цель',
   type: 'object',
   required: [
     'targetId',
     'title',
-    'source',
-    'code'
+    'source'
   ],
   additionalProperties: false,
   properties: {
     targetId,
     title,
-    source,
-    code
+    source
   }
 }
 

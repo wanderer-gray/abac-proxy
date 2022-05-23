@@ -1,6 +1,6 @@
 export const TargetAPI = {
   searchTarget: (title) =>
-    http('api/target/searchFunction')
+    http('api/target/searchTarget')
       .method('get')
       .query({ title }),
 
@@ -9,13 +9,13 @@ export const TargetAPI = {
       .method('get')
       .query({ targetId }),
 
-  createTarget: (targetId, title, code) =>
+  createTarget: (targetId, title, source) =>
     http('api/target/createTarget')
       .method('post')
       .body({
         targetId,
         title,
-        code
+        source
       }),
 
   updateTarget: (targetId, targetData) =>

@@ -22,31 +22,19 @@ const source = {
   example: 'abc == 123'
 }
 
-const code = {
-  description: 'Код условия',
-  type: 'object',
-  example: {
-    class: 'value',
-    type: 'boolean',
-    value: true
-  }
-}
-
 const condition = {
   description: 'Условие',
   type: 'object',
   required: [
     'conditionId',
     'title',
-    'source',
-    'code'
+    'source'
   ],
   additionalProperties: false,
   properties: {
     conditionId,
     title,
-    source,
-    code
+    source
   }
 }
 

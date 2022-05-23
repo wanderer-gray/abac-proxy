@@ -9,13 +9,13 @@ export const ConditionAPI = {
       .method('get')
       .query({ conditionId }),
 
-  createCondition: (conditionId, title, code) =>
+  createCondition: (conditionId, title, source) =>
     http('api/condition/createCondition')
       .method('post')
       .body({
         conditionId,
         title,
-        code
+        source
       }),
 
   updateCondition: (conditionId, conditionData) =>

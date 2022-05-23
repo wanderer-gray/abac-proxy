@@ -1,5 +1,4 @@
 import React, {
-  Fragment,
   useMemo,
   useCallback
 } from 'react'
@@ -11,6 +10,7 @@ import {
   useNavigate
 } from 'react-router-dom'
 import { useAuth } from '../Auth'
+import Targets from './Targets'
 import {
   Container,
   Grid,
@@ -30,7 +30,7 @@ const pages = [
   {
     path: '/target',
     title: 'Цели',
-    element: null
+    element: <Targets />
   },
   {
     path: '/condition',
@@ -50,12 +50,6 @@ const pages = [
   {
     path: '/policySets',
     title: 'Группы политик',
-    element: null
-  },
-  {
-    divider: true,
-    path: '/sandbox',
-    title: 'Песочница',
     element: null
   }
 ]
@@ -93,16 +87,13 @@ export default function App () {
           >
             {pages.map(({ path, divider, title }) => {
               return (
-                <Fragment key={path}>
-                  {divider ? <Divider /> : null}
-
-                  <ListItemButton
-                    selected={path === currentPath}
-                    onClick={onNavigate(path)}
-                  >
-                    <ListItemText primary={title} />
-                  </ListItemButton>
-                </Fragment>
+                <ListItemButton
+                  key={path}
+                  selected={path === currentPath}
+                  onClick={onNavigate(path)}
+                >
+                  <ListItemText primary={title} />
+                </ListItemButton>
               )
             })}
 

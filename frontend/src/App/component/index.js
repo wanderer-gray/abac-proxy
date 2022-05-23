@@ -6,12 +6,9 @@ import AddButton from './AddButton'
 import EditButton from './EditButton'
 import DeleteButton from './DeleteButton'
 import CollapseButton from './CollapseButton'
+import TextField from './TextField'
+import CodeField from './CodeField'
 import SearchField from './SearchField'
-import SearchUser from './SearchUser'
-import SearchOffice from './SearchOffice'
-import SearchPosition from './SearchPosition'
-import SearchStatus from './SearchStatus'
-import SearchRole from './SearchRole'
 import Table from './Table'
 import Dialog from './Dialog'
 
@@ -24,12 +21,9 @@ export {
   EditButton,
   DeleteButton,
   CollapseButton,
+  TextField,
+  CodeField,
   SearchField,
-  SearchUser,
-  SearchOffice,
-  SearchPosition,
-  SearchStatus,
-  SearchRole,
   Table,
   Dialog
 }
