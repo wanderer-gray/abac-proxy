@@ -1,9 +1,4 @@
-const app = require('fastify')({
-  logger: {
-    level: 'trace',
-    prettyPrint: true
-  }
-})
+const app = require('fastify')()
 
 const config = require('./config')[process.env.NODE_ENV || 'development']
 
