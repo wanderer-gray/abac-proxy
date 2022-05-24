@@ -1,3 +1,3 @@
-const { getPolicyRules } = require('../../utils')
+const { getPolicySetPolicies } = require('../../utils')
 
-module.exports = getPolicyRules
+module.exports = getPolicySetPolicies

@@ -9,55 +9,55 @@ import {
   Dialog,
   TextField,
   SearchTarget,
-  SearchAlgorithmRule,
+  SearchAlgorithmPolicy,
   SearchNamespace
 } from '../component'
 
-function getPolicyData (policy, { title, targetId, algorithmRuleId, namespaceName }) {
-  const policyData = {}
+function getPolicySetData (policySet, { title, targetId, algorithmPolicyId, namespaceName }) {
+  const policySetData = {}
 
-  if (policy.title !== title) {
-    policyData.title = title
+  if (policySet.title !== title) {
+    policySetData.title = title
   }
 
-  if (policy.targetId !== targetId) {
-    policyData.targetId = targetId
+  if (policySet.targetId !== targetId) {
+    policySetData.targetId = targetId
   }
 
-  if (policy.algorithmRuleId !== algorithmRuleId) {
-    policyData.algorithmRuleId = algorithmRuleId
+  if (policySet.algorithmPolicyId !== algorithmPolicyId) {
+    policySetData.algorithmPolicyId = algorithmPolicyId
   }
 
-  if (policy.namespaceName !== namespaceName) {
-    policyData.namespaceName = namespaceName
+  if (policySet.namespaceName !== namespaceName) {
+    policySetData.namespaceName = namespaceName
   }
 
-  return policyData
+  return policySetData
 }
 
-export default function UpdatePolicy ({ policy, onUpdate }) {
+export default function UpdatePolicySet ({ policySet, onUpdate }) {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState(policy.title)
-  const [target, setTarget] = useState(policy.target)
-  const [algorithmRule, setAlgorithmRule] = useState(policy.algorithmRule)
-  const [namespace, setNamespace] = useState(policy.namespace)
+  const [title, setTitle] = useState(policySet.title)
+  const [target, setTarget] = useState(policySet.target)
+  const [algorithmPolicy, setAlgorithmPolicy] = useState(policySet.algorithmPolicy)
+  const [namespace, setNamespace] = useState(policySet.namespace)
 
   const targetId = useMemo(() => target?.targetId ?? null, [target])
-  const algorithmRuleId = useMemo(() => algorithmRule?.algorithmRuleId ?? null, [algorithmRule])
+  const algorithmPolicyId = useMemo(() => algorithmPolicy?.algorithmPolicyId ?? null, [algorithmPolicy])
   const namespaceName = useMemo(() => namespace?.name ?? null, [namespace])
 
   const errors = useMemo(() => {
     return {
       title: !title.trim() ? 'Введите название' : undefined,
       target: !target ? 'Укажите цель' : undefined,
-      algorithmRule: !algorithmRule ? 'Укажите алгоритм' : undefined
+      algorithmPolicy: !algorithmPolicy ? 'Укажите алгоритм' : undefined
     }
-  }, [title, target, algorithmRule])
+  }, [title, target, algorithmPolicy])
 
   const onOpen = useCallback(() => setOpen(true))
   const onClose = useCallback(() => setOpen(false))
 
-  const onUpdatePolicy = useCallback(async () => {
+  const onUpdatePolicySet = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -69,23 +69,23 @@ export default function UpdatePolicy ({ policy, onUpdate }) {
       return
     }
 
-    const policyData = getPolicyData(policy, { title, targetId, algorithmRuleId, namespaceName })
+    const policySetData = getPolicySetData(policySet, { title, targetId, algorithmPolicyId, namespaceName })
 
-    if (!Object.keys(policyData).length) {
+    if (!Object.keys(policySetData).length) {
       onClose()
 
       return
     }
 
     try {
-      await PolicyAPI.updatePolicy(policy.policyId, policyData)
+      await PolicySetAPI.updatePolicySet(policySet.policySetId, policySetData)
 
       onClose()
       onUpdate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось изменить политику'
+        message: 'Не удалось изменить группу политик'
       })
     }
   })
@@ -95,10 +95,10 @@ export default function UpdatePolicy ({ policy, onUpdate }) {
       <EditButton onClick={onOpen} />
 
       <Dialog
-        title={'Редактирование политики'}
+        title={'Редактирование группы политик'}
         open={open}
         onClose={onClose}
-        onSave={onUpdatePolicy}
+        onSave={onUpdatePolicySet}
       >
         <TextField
           sx={{ marginBottom: 1 }}
@@ -116,12 +116,12 @@ export default function UpdatePolicy ({ policy, onUpdate }) {
           onChange={setTarget}
           errorText={errors.target}
         />
-        <SearchAlgorithmRule
+        <SearchAlgorithmPolicy
           sx={{ marginBottom: 1 }}
           required={true}
-          value={algorithmRule}
-          onChange={setAlgorithmRule}
-          errorText={errors.algorithmRule}
+          value={algorithmPolicy}
+          onChange={setAlgorithmPolicy}
+          errorText={errors.algorithmPolicy}
         />
         <SearchNamespace
           value={namespace}
@@ -132,7 +132,7 @@ export default function UpdatePolicy ({ policy, onUpdate }) {
   )
 }
 
-UpdatePolicy.propTypes = {
-  policy: PropTypes.object,
+UpdatePolicySet.propTypes = {
+  policySet: PropTypes.object,
   onUpdate: PropTypes.func
 }

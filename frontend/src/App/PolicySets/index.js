@@ -10,10 +10,10 @@ import {
   ContainerTable,
   SearchField
 } from '../component'
-import CreatePolicy from './CreatePolicy'
-import UpdatePolicy from './UpdatePolicy'
-import DeletePolicy from './DeletePolicy'
-import Rules from './Rules'
+import CreatePolicySet from './CreatePolicySet'
+import UpdatePolicySet from './UpdatePolicySet'
+import DeletePolicySet from './DeletePolicySet'
+import Policies from './Policies'
 import { wait } from '../utils'
 
 const columns = [
@@ -35,8 +35,8 @@ const columns = [
         title: 'Цель'
       },
       {
-        name: 'algorithmRule',
-        path: ['algorithmRule', 'name'],
+        name: 'algorithmPolicy',
+        path: ['algorithmPolicy', 'name'],
         title: 'Алгоритм'
       },
       {
@@ -52,76 +52,76 @@ const columns = [
   },
   {
     collapse: true,
-    name: 'rules',
-    title: 'Правила',
-    convert: ({ policyId }) =>
-      <Rules policyId={policyId} />
+    name: 'policies',
+    title: 'Политики',
+    convert: ({ policySetId }) =>
+      <Policies policySetId={policySetId} />
   }
 ]
 
 const getTarget = (id) =>
   TargetAPI.getTarget(id)
 
-const getAlgorithmRule = (id) =>
-  AlgorithmRuleAPI.getAlgorithmRule(id)
+const getAlgorithmPolicy = (id) =>
+  AlgorithmPolicyAPI.getAlgorithmPolicy(id)
 
 const getNamespace = (name) =>
   NamespaceAPI.getNamespace(name)
 
-const getPolicy = async (id) => {
+const getPolicySet = async (id) => {
   const {
-    policyId,
+    policySetId,
     title,
     targetId,
-    algorithmRuleId,
+    algorithmPolicyId,
     namespaceName
-  } = await PolicyAPI.getPolicy(id)
+  } = await PolicySetAPI.getPolicySet(id)
 
   const [
     target,
-    algorithmRule,
+    algorithmPolicy,
     namespace
   ] = await Promise.all([
     getTarget(targetId),
-    getAlgorithmRule(algorithmRuleId),
+    getAlgorithmPolicy(algorithmPolicyId),
     namespaceName ? getNamespace(namespaceName) : null
   ])
 
   return {
-    policyId,
+    policySetId,
     title,
     target,
-    algorithmRule,
+    algorithmPolicy,
     namespace
   }
 }
 
-const getPolicies = (ids) =>
-  wait(ids.map(getPolicy))
+const getPolicySets = (ids) =>
+  wait(ids.map(getPolicySet))
 
-const searchPolicy = async (title) => {
+const searchPolicySet = async (title) => {
   try {
-    const ids = await PolicyAPI.searchPolicy(title)
+    const ids = await PolicySetAPI.searchPolicySet(title)
 
-    return getPolicies(ids)
+    return getPolicySets(ids)
   } catch {
     nofity({
       variant: 'error',
-      message: 'Не удалось получить список политик'
+      message: 'Не удалось получить список групп политик'
     })
   }
 
   return []
 }
 
-export default function Policies () {
+export default function PolicySets () {
   const [title, setTitle] = useState('')
-  const [policies, setPolicies] = useState([])
+  const [policySets, setPolicySets] = useState([])
 
   const refresh = useCallback(async () => {
-    const policies = await searchPolicy(title)
+    const policySets = await searchPolicySet(title)
 
-    setPolicies(policies)
+    setPolicySets(policySets)
   })
 
   useEffect(() => { refresh() }, [title])
@@ -129,8 +129,8 @@ export default function Policies () {
   return (
     <Container>
       <ContainerHeader
-        title={'Политики'}
-        create={<CreatePolicy onCreate={refresh} />}
+        title={'Группы политик'}
+        create={<CreatePolicySet onCreate={refresh} />}
       />
 
       <ContainerSearch>
@@ -145,24 +145,24 @@ export default function Policies () {
       <ContainerTable
         columns={columns}
         rows={
-          policies.map((policy) => {
-            const { policyId } = policy
+          policySets.map((policySet) => {
+            const { policySetId } = policySet
 
             return {
-              key: policyId,
-              policyId,
-              title: policy.title,
-              target: policy.target,
-              algorithmRule: policy.algorithmRule,
-              namespace: policy.namespace,
+              key: policySetId,
+              policySetId,
+              title: policySet.title,
+              target: policySet.target,
+              algorithmPolicy: policySet.algorithmPolicy,
+              namespace: policySet.namespace,
               action: (
                 <>
-                  <UpdatePolicy
-                    policy={policy}
+                  <UpdatePolicySet
+                    policySet={policySet}
                     onUpdate={refresh}
                   />
-                  <DeletePolicy
-                    policy={policy}
+                  <DeletePolicySet
+                    policySet={policySet}
                     onDelete={refresh}
                   />
                 </>

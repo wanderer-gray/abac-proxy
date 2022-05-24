@@ -22,6 +22,10 @@ function getRowValueByPath (row, path) {
     return row
   }
 
+  if (typeof row !== 'object' || row === null || Array.isArray(row)) {
+    return row
+  }
+
   const [key, ...next] = path
 
   return getRowValueByPath(row[key], next)
@@ -48,7 +52,7 @@ function getRowValue (row, { vertical, columns, path, name, convert }) {
 
   const value = getRowValueByPath(row, path ?? [name])
 
-  return getRowValueConverted(value, convert)
+  return getRowValueConverted(value, convert) ?? '-'
 }
 
 function MyTableRow ({

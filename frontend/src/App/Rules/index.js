@@ -87,9 +87,9 @@ const getRule = async (id) => {
     namespace
   ] = await Promise.all([
     getEffect(effectId),
-    getTarget(targetId),
+    targetId ? getTarget(targetId) : null,
     getCondition(conditionId),
-    getNamespace(namespaceName)
+    namespaceName ? getNamespace(namespaceName) : null
   ])
 
   return {

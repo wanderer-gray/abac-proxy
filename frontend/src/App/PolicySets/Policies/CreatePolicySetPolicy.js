@@ -7,30 +7,30 @@ import PropTypes from 'prop-types'
 import {
   AddButton,
   Dialog,
-  SearchRule
+  SearchPolicy
 } from '../../component'
 import { uuid } from '../../utils'
 
-export default function CreatePolicyRule ({ policyId, onCreate }) {
+export default function CreatePolicySetPolicy ({ policySetId, onCreate }) {
   const [open, setOpen] = useState(false)
-  const [rule, setRule] = useState(null)
+  const [policy, setPolicy] = useState(null)
 
-  const ruleId = useMemo(() => rule?.ruleId ?? null, [rule])
+  const policyId = useMemo(() => policy?.policyId ?? null, [policy])
 
   const errors = useMemo(() => {
     return {
-      rule: !rule ? 'Укажите правило' : undefined
+      policy: !policy ? 'Укажите политику' : undefined
     }
-  }, [rule])
+  }, [policy])
 
   const onOpen = useCallback(() => {
-    setRule(null)
+    setPolicy(null)
 
     setOpen(true)
   })
   const onClose = useCallback(() => setOpen(false))
 
-  const onAddPolicyRule = useCallback(async () => {
+  const onAddPolicySetPolicy = useCallback(async () => {
     const existsError = Object.values(errors).some(Boolean)
 
     if (existsError) {
@@ -43,14 +43,14 @@ export default function CreatePolicyRule ({ policyId, onCreate }) {
     }
 
     try {
-      await PolicyAPI.addPolicyRule(uuid(), policyId, ruleId)
+      await PolicySetAPI.addPolicySetPolicy(uuid(), policySetId, policyId)
 
       onClose()
       onCreate()
     } catch {
       nofity({
         variant: 'error',
-        message: 'Не удалось создать правило политики'
+        message: 'Не удалось создать политику группы'
       })
     }
   })
@@ -60,23 +60,23 @@ export default function CreatePolicyRule ({ policyId, onCreate }) {
       <AddButton onClick={onOpen} />
 
       <Dialog
-        title={'Создание правила политики'}
+        title={'Создание политики группы'}
         open={open}
         onClose={onClose}
-        onSave={onAddPolicyRule}
+        onSave={onAddPolicySetPolicy}
       >
-        <SearchRule
+        <SearchPolicy
           required={true}
-          value={rule}
-          onChange={setRule}
-          errorText={errors.rule}
+          value={policy}
+          onChange={setPolicy}
+          errorText={errors.policy}
         />
       </Dialog>
     </>
   )
 }
 
-CreatePolicyRule.propTypes = {
-  policyId: PropTypes.string,
+CreatePolicySetPolicy.propTypes = {
+  policySetId: PropTypes.string,
   onCreate: PropTypes.func
 }

@@ -15,6 +15,7 @@ import Targets from './Targets'
 import Conditions from './Conditions'
 import Rules from './Rules'
 import Policies from './Policies'
+import PolicySets from './PolicySets'
 import {
   Container,
   Grid,
@@ -54,7 +55,7 @@ const pages = [
   {
     path: '/policySets',
     title: 'Группы политик',
-    element: null
+    element: <PolicySets />
   }
 ]
 

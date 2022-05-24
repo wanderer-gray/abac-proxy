@@ -15,7 +15,10 @@ import SearchNamespace from './SearchNamespace'
 import SearchTarget from './SearchTarget'
 import SearchCondition from './SearchCondition'
 import SearchEffect from './SearchEffect'
+import SearchRule from './SearchRule'
 import SearchAlgorithmRule from './SearchAlgorithmRule'
+import SearchPolicy from './SearchPolicy'
+import SearchAlgorithmPolicy from './SearchAlgorithmPolicy'
 import Table from './Table'
 import VTable from './VTable'
 import Dialog from './Dialog'
@@ -38,7 +41,10 @@ export {
   SearchTarget,
   SearchCondition,
   SearchEffect,
+  SearchRule,
   SearchAlgorithmRule,
+  SearchPolicy,
+  SearchAlgorithmPolicy,
   Table,
   VTable,
   Dialog

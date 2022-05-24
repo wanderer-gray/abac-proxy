@@ -8,7 +8,7 @@ module.exports = async function (policySetId, title, targetId, algorithmPolicyId
 
   assertNamespaceName(namespaceName, app)
 
-  await knex('policy')
+  await knex('policySet')
     .insert({
       policySetId,
       title,

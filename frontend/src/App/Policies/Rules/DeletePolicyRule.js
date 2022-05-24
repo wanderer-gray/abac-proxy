@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { DeleteButton } from '../component'
+import { DeleteButton } from '../../component'
 
 export default function DeletePolicyRule ({ policyRule, onDelete }) {
   const onDeletePolicyRule = useCallback(async () => {
