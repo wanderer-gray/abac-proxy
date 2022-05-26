@@ -76,7 +76,7 @@ export default function UpdateRule ({ rule, onUpdate }) {
       return
     }
 
-    const ruleData = getRuleData(condition, { title, effectId, targetId, conditionId, namespaceName })
+    const ruleData = getRuleData(rule, { title, effectId, targetId, conditionId, namespaceName })
 
     if (!Object.keys(ruleData).length) {
       onClose()

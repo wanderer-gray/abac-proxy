@@ -1,11 +1,15 @@
 module.exports = async (request) => {
-  const requestRaw = request.raw
+  try {
+    const requestRaw = request.raw
 
-  const requestChunks = []
+    const requestChunks = []
 
-  for await (const requestChunk of requestRaw) {
-    requestChunks.push(requestChunk)
+    for await (const requestChunk of requestRaw) {
+      requestChunks.push(requestChunk)
+    }
+
+    return [false, Buffer.concat(requestChunks)]
+  } catch {
+    return [true]
   }
-
-  return Buffer.concat(requestChunks)
 }

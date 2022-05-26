@@ -2,31 +2,25 @@ const { ABAC } = require('abac-kernel')
 const getNamespace = require('../utils/getNamespace')
 const getPolicySets = require('./getPolicySets')
 
-const fmtAbac = (abacData, app) => {
-  const {
-    namespaceName
-  } = abacData
-
-  const namespace = getNamespace(namespaceName, app)
-
-  return {
-    ...abacData,
-    namespace
-  }
-}
-
 module.exports = async (abacData, app) => {
-  const [
-    formattedAbac,
-    policySets
-  ] = await Promise.all([
-    fmtAbac(abacData, app),
-    getPolicySets(app)
-  ])
+  try {
+    const {
+      algorithm,
+      namespaceName
+    } = abacData
 
-  const abac = ABAC.new(formattedAbac)
+    const namespace = getNamespace(namespaceName, app)
+    const policySets = await getPolicySets(app)
 
-  abac.addPolicySets(policySets)
+    const abac = ABAC.new({
+      algorithm,
+      namespace
+    })
 
-  return abac
+    abac.addPolicySets(policySets)
+
+    return [false, abac]
+  } catch {
+    return [true]
+  }
 }

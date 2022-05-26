@@ -27,7 +27,9 @@ module.exports = {
       },
       pool: {
         min: 1,
-        max: 4
+        max: 4,
+        afterCreate: (conn, cb) =>
+          conn.run('PRAGMA foreign_keys = ON', cb)
       },
       migrations: {
         tableName: 'knex_migrations'

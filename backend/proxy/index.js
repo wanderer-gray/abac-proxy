@@ -16,11 +16,27 @@ module.exports = fastifyPlugin(async function (app, options) {
     const requestRaw = request.raw
     const replyRaw = reply.raw
 
-    const bodyRaw = await getBodyRaw(request)
+    const [errorBodyRaw, bodyRaw] = await getBodyRaw(request)
+
+    if (errorBodyRaw) {
+      reply
+        .code(403)
+        .send()
+
+      return
+    }
 
     const requestData = getRequestData(request, bodyRaw)
 
-    const abac = await getAbac(options, app)
+    const [errorAbac, abac] = await getAbac(options, app)
+
+    if (errorAbac) {
+      reply
+        .code(403)
+        .send()
+
+      return
+    }
 
     const result = await abac.Context(requestData)
 

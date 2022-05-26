@@ -36,6 +36,7 @@ module.exports = fastifyPlugin(async function (app) {
   const namespaces = new Namespaces()
 
   namespaces.add(require('./system'))
+  namespaces.add(require('./user'))
 
   app.decorate('namespaces', namespaces)
 })

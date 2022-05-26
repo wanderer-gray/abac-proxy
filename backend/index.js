@@ -20,12 +20,6 @@ app.register(require('./auth'), { prefix: '/auth' })
 
 app.register(require('./api'), { prefix: '/api' })
 
-app.addHook('onReady', async () => {
-  const { knex } = app
-
-  await knex.raw('PRAGMA foreign_keys = ON;')
-})
-
 app.listen(config.server, (err, addr) => {
   if (err) {
     process.exit(1)
